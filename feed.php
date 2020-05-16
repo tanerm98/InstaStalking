@@ -5,8 +5,17 @@
 	
 	// Retrieve posts from the database
 	$posts = mysqli_query($con, "SELECT U.id_user, name, id_img, username, path, upload_date, likes
-								FROM images I join users U ON I.id_user = U.id_user 
+								FROM images I join users U ON I.id_user = U.id_user
+								WHERE I.profile = 0
 								ORDER BY upload_date desc");
+
+	if(isset($_POST["delete_comm"])) {
+		$id_comm = $_POST['id_comm'];
+		$con->query("DELETE from comments WHERE id_comm = '$id_comm'");
+
+		header('location: feed.php');
+		exit;
+	}
 
 	if (isset($_POST['post_comm'])) {
 		$id_img = $_POST['id'];
@@ -67,18 +76,9 @@
 	}
 	
 	if (isset($_POST['search_user'])) {
-		$to_search = $_POST['searched_user'];
-		
-		$get_user_id = mysqli_query($con, "SELECT id_user
-								FROM users
-								WHERE username = '$to_search'");
-		if ($user_id = mysqli_fetch_array($get_user_id)) {
-			$user_id = $user_id['id_user'];
-			$_SESSION['profile_id_user'] = $user_id;
-			header('Location: profile.php');
-			exit;
-		}
-		
+		$_SESSION['searched_user'] = $_POST['searched_user'];
+		header('Location: searched.php');
+		exit;
 	}
 ?>
 
@@ -121,7 +121,7 @@
         $id_img = $row['id_img'];
         $id_user = $row['id_user'];
         $nr_comm = mysqli_query($con, "SELECT COUNT(*) from comments where id_img = '$id_img'");
-        $comm =  mysqli_query($con, "SELECT name, username, U.id_user, comm, date FROM instastalking.comments C join instastalking.users U on C.id_user = U.id_user where id_img = '$id_img'");
+        $comm =  mysqli_query($con, "SELECT name, username, U.id_user, comm, id_comm, date FROM instastalking.comments C join instastalking.users U on C.id_user = U.id_user where id_img = '$id_img'");
 
         $profile =  mysqli_query($con, "SELECT path FROM images where id_user ='$id_user' and profile ='1' ");
         $res = mysqli_fetch_array($profile);
@@ -217,6 +217,16 @@
 												</span>
 											</span>
 										<?php echo $row1['comm']; ?>
+										<?php if($row1['id_user'] == $_SESSION['id_user']) : ?>
+											<span class="text-muted pull-right">
+												<form action="feed.php" method="post">
+													<input type="text" hidden = "true"  name="id_comm" value="<?php echo $row1['id_comm'] ?>" >
+													<button class="btn btn-light btn-sm" name="delete_comm" onclick="submit" style="font-size:10px">
+														Delete
+													</button>
+												</form>
+											</span>
+										<?php endif; ?>
 										</div>
 									</div>
                                 <?php } ?>		

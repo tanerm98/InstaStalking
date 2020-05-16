@@ -3,19 +3,27 @@ DONE	- accesibil din:
 DONE		- feed
 DONE		- comentarii
 
-- search bar: username
-	=> lista cu useri
+DONE - search bar: username
+DONE		=> lista cu useri
 	
 DONE - lista cu useri
 DONE	- accesibil din:
 DONE		- like-uri
 
+DONE - sterge comentarii
+
 - buton de follow/unfollow la profil
 
+- pagina de upload photo
+	- profil
+	- feed
+	- descriere
+
 - buton de followers, following si top 5 la profil
+
+- search pe tag-uri
+
 - setari:
 	- schimbare username
-	- poza de profil
-- descriere la poza
-- search pe tag-uri
-- sterge comentarii
+	- schimbare email
+	- schimbare parola

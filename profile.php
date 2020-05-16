@@ -14,6 +14,7 @@
 	$posts = mysqli_query($con, "SELECT U.id_user, name, id_img, username, path, upload_date, likes
 								FROM images I join users U on I.id_user = U.id_user
 								WHERE I.id_user = '$id_user'
+								AND I.profile = 0
 								ORDER BY upload_date desc");
 						   
     $profile =mysqli_query($con, "SELECT path FROM images Where id_user = '$id_user' and profile = '1' ");
@@ -21,14 +22,22 @@
 
     $statusMsg="";
 
-  if(isset($_POST["delete_post"])) {
-    $id_img = $_POST['id'];
-    $query_delete = "DELETE from images Where  id_user = '$id_user' and id_img = '$id_img'";
-    mysqli_query($con, $query_delete);
+	if(isset($_POST["delete_post"])) {
+		$id_img = $_POST['id'];
+		$query_delete = "DELETE from images Where  id_user = '$id_user' and id_img = '$id_img'";
+		mysqli_query($con, $query_delete);
 
-    header('location: profile.php');
-    exit;
-}
+		header('location: profile.php');
+		exit;
+	}
+	
+	if(isset($_POST["delete_comm"])) {
+		$id_comm = $_POST['id_comm'];
+		$con->query("DELETE from comments WHERE id_comm = '$id_comm'");
+
+		header('location: profile.php');
+		exit;
+	}
 
   if(isset($_POST["upload"])) {
      $targetDir = "./Photos/";
@@ -72,6 +81,8 @@ if (isset($_POST['post_comm'])) {
 		mysqli_query($con, $query);
 		
 		$scrollPos = (array_key_exists('scroll', $_GET)) ? $_GET['scroll'] : 0;
+
+		$_SESSION['profile_id_user'] = $_POST['profile_id_user'];
 		header('Location: profile.php#scroll='.$scrollPos);
 		exit;
 	}
@@ -88,10 +99,12 @@ if (isset($_POST['post_comm'])) {
 		if ($like) {
 			$query = "UPDATE images set likes = likes - 1 Where id_img = '$id_img'";
 			mysqli_query($con, $query);
+			$_SESSION['profile_id_user'] = $_POST['profile_id_user'];
 			header('Location: profile.php');
 
 			$query_delete = "DELETE from likes Where  id_user = '$id_user_logged' and id_img = '$id_img'";
 			mysqli_query($con, $query_delete);
+			$_SESSION['profile_id_user'] = $_POST['profile_id_user'];
 			header('Location: profile.php#scroll='.$scrollPos);
 			exit;
 
@@ -102,6 +115,7 @@ if (isset($_POST['post_comm'])) {
 
 			$query_update = "UPDATE images set likes = likes + 1 Where id_img = '$id_img'";
 			mysqli_query($con, $query_update);
+			$_SESSION['profile_id_user'] = $_POST['profile_id_user'];
 			header('Location: profile.php#scroll='.$scrollPos);
 			exit;
 		}
@@ -153,18 +167,9 @@ if(isset($_POST["upload_profile"])) {
 	}
 	
 	if (isset($_POST['search_user'])) {
-		$to_search = $_POST['searched_user'];
-		
-		$get_user_id = mysqli_query($con, "SELECT id_user
-								FROM users
-								WHERE username = '$to_search'");
-		if ($user_id = mysqli_fetch_array($get_user_id)) {
-			$user_id = $user_id['id_user'];
-			$_SESSION['profile_id_user'] = $user_id;
-			header('Location: profile.php');
-			exit;
-		}
-		
+		$_SESSION['searched_user'] = $_POST['searched_user'];
+		header('Location: searched.php');
+		exit;
 	}
 
 
@@ -248,7 +253,7 @@ if(isset($_POST["upload_profile"])) {
         $id_img = $row['id_img'];
         $id_user = $row['id_user'];
         $nr_comm = mysqli_query($con, "SELECT COUNT(*) from comments where id_img = '$id_img'");
-        $comm =  mysqli_query($con, "SELECT name, username, U.id_user, comm, date FROM instastalking.comments C join instastalking.users U on C.id_user = U.id_user where id_img = '$id_img'");
+        $comm =  mysqli_query($con, "SELECT name, username, U.id_user, comm, id_comm, date FROM instastalking.comments C join instastalking.users U on C.id_user = U.id_user where id_img = '$id_img'");
 
         $profile =  mysqli_query($con, "SELECT path FROM images where id_user ='$id_user' and profile ='1' ");
         $res = mysqli_fetch_array($profile);
@@ -284,6 +289,10 @@ if(isset($_POST["upload_profile"])) {
 									<span class="pull-right text-muted">
 										<form action="profile.php" method="post">
 											<input type="text" hidden = "true"  name="likers_id_photo" value="<?php echo $row['id_img'] ?>" >
+											<input type="text" hidden = "true"  name="profile_id_user" value="<?php echo $row['id_user'] ?>" >
+											<?php if($id_user == $_SESSION['id_user']) : ?>
+												<button class="btn btn-secondary pull-right" name="delete_post" onclick="submit" style="font-size:17px;margin-right:20px ;"><i class="fa fa-trash-o"></i></button>
+											<?php endif; ?>
 											<button class="btn btn-primary" name="to_likers" onclick="submit" style="font-size:12px; margin-left:10px">
 												<?php echo $row['likes']; ?> likes - <?php echo $nr_comments['0']; ?> comments
 											</button>
@@ -297,6 +306,10 @@ if(isset($_POST["upload_profile"])) {
 									<span class="pull-right text-muted">
 										<form action="profile.php" method="post">
 											<input type="text" hidden = "true"  name="likers_id_photo" value="<?php echo $row['id_img'] ?>" >
+											<input type="text" hidden = "true"  name="profile_id_user" value="<?php echo $row['id_user'] ?>" >
+											<?php if($id_user == $_SESSION['id_user']) : ?>
+												<button class="btn btn-secondary pull-right" name="delete_post" onclick="submit" style="font-size:17px;margin-right:20px ;"><i class="fa fa-trash-o"></i></button>
+											<?php endif; ?>
 											<button class="btn btn-primary" name="to_likers" onclick="submit" style="font-size:12px; margin-left:10px">
 												<?php echo $row['likes']; ?> likes - <?php echo $nr_comments['0']; ?> comments
 											</button>
@@ -334,6 +347,16 @@ if(isset($_POST["upload_profile"])) {
 												</span>
 											</span>
 										<?php echo $row1['comm']; ?>
+										<?php if($row1['id_user'] == $_SESSION['id_user']) : ?>
+											<span class="text-muted pull-right">
+												<form action="profile.php" method="post">
+													<input type="text" hidden = "true"  name="id_comm" value="<?php echo $row1['id_comm'] ?>" >
+													<button class="btn btn-light btn-sm" name="delete_comm" onclick="submit" style="font-size:10px">
+														Delete
+													</button>
+												</form>
+											</span>
+										<?php endif; ?>
 										</div>
 									</div>
                                 <?php } ?>		
@@ -355,6 +378,7 @@ if(isset($_POST["upload_profile"])) {
 										<input id="myInput" name="comment" type="text" class="form-control input-sm" placeholder="Press enter to post comment">
 									</div>
                                     <input type="text" hidden = "true"  name="id" value="<?php echo $row['id_img'] ?>" >
+									<input type="text" hidden = "true"  name="profile_id_user" value="<?php echo $row['id_user'] ?>" >
                                     <button name="post_comm" hidden = "true" onclick="submit" >Button</button>
                                 </form>
                             </div>

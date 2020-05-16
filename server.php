@@ -50,7 +50,15 @@
 			$query = "INSERT INTO users (name, username, email, password)
 					  VALUES('$name', '$username', '$email', '$password')";
 			mysqli_query($db, $query);
-
+			
+			$get_id_user = mysqli_query($db, "SELECT id_user
+											FROM users
+											WHERE username = '$username'");
+			$id_user = mysqli_fetch_array($get_id_user)['id_user'];
+	
+			$db->query("UPDATE images set profile = 0 where profile = '1' and id_user = '$id_user'");
+			$db->query("INSERT into images (id_user, path, upload_date, profile) VALUES ($id_user, './Photos/default_profile.png', NOW(), 1)");
+			
 			$_SESSION['username'] = $username;
 			$_SESSION['success'] = "You are now logged in!";
 			header('location: login.php');

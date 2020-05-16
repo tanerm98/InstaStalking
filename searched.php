@@ -2,20 +2,15 @@
     session_start();
 	
 	// connect to the database
-	$id_img = $_SESSION['likers_id_photo'];
-	
 	$con = mysqli_connect('localhost', 'root', 'root', 'instastalking');
 	
-    $likers = mysqli_query($con, "SELECT id_user
-								FROM likes
-								WHERE id_img = '$id_img'");
+    $to_search = $_SESSION['searched_user'];
+		
+	$get_user_id = mysqli_query($con, "SELECT id_user, name, username
+							FROM users
+							WHERE LOCATE('$to_search', username)
+							OR LOCATE('$to_search', name)");
 ?>
-
-<script>
-function pop_up(url){
-window.open(url,'win2','status=no,toolbar=no,scrollbars=yes,titlebar=no,menubar=no,resizable=yes,width=1076,height=768,directories=no,location=no') 
-}
-</script>
 
 <!DOCTYPE html>
 <html lang="en">
@@ -23,7 +18,7 @@ window.open(url,'win2','status=no,toolbar=no,scrollbars=yes,titlebar=no,menubar=
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <meta charset="UTF-8">
-    <link rel="stylesheet" type="text/css" href="likers.css">
+    <link rel="stylesheet" type="text/css" href="searched.css">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
 </head>
 <body>
@@ -50,7 +45,7 @@ window.open(url,'win2','status=no,toolbar=no,scrollbars=yes,titlebar=no,menubar=
 		</div>
 	</nav>
 
-<?php while ($row = mysqli_fetch_array($likers)) { ?>
+<?php while ($row = mysqli_fetch_array($get_user_id)) { ?>
 
         <?php
         $id_user = $row['id_user'];
@@ -84,7 +79,6 @@ window.open(url,'win2','status=no,toolbar=no,scrollbars=yes,titlebar=no,menubar=
 		<?php } ?>		
 		
 <?php } ?>
-
 
 <script>
 var input = document.getElementById("myInput");
