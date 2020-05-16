@@ -1,0 +1,21 @@
+DONE- profilul altuia
+DONE	- accesibil din:
+DONE		- feed
+DONE		- comentarii
+
+- search bar: username
+	=> lista cu useri
+	
+DONE - lista cu useri
+DONE	- accesibil din:
+DONE		- like-uri
+
+- buton de follow/unfollow la profil
+
+- buton de followers, following si top 5 la profil
+- setari:
+	- schimbare username
+	- poza de profil
+- descriere la poza
+- search pe tag-uri
+- sterge comentarii
