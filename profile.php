@@ -11,7 +11,7 @@
 								WHERE id_user = '$id_user'");
 	$username = mysqli_fetch_array($get_username)['username'];
 	
-	$posts = mysqli_query($con, "SELECT U.id_user, name, id_img, username, path, upload_date, likes
+	$posts = mysqli_query($con, "SELECT U.id_user, name, id_img, username, path, upload_date, likes, description
 								FROM images I join users U on I.id_user = U.id_user
 								WHERE I.id_user = '$id_user'
 								AND I.profile = 0
@@ -38,37 +38,6 @@
 		header('location: profile.php');
 		exit;
 	}
-
-  if(isset($_POST["upload"])) {
-     $targetDir = "./Photos/";
-     $fileName = basename($_FILES["file"]["name"]);
-     $targetFilePath = $targetDir . $fileName;
-     $fileType = pathinfo($targetFilePath,PATHINFO_EXTENSION);
-    // Allow certain file formats
-    $allowTypes = array('jpg','png','jpeg','gif');
-    if(!empty($_FILES["file"]["name"])) {
-        if(in_array($fileType, $allowTypes)) {
-        // Upload file to server
-             if(move_uploaded_file($_FILES["file"]["tmp_name"], $targetFilePath)){
-            // Insert image file name into database
-                 $insert = $con->query("INSERT into images (id_user, path, upload_date) VALUES ($id_user,'".$fileName."', NOW())");
-                if($insert){
-                    $statusMsg = "The file ".$fileName. " has been uploaded successfully.";
-                } else{
-                    $statusMsg = "File upload failed, please try again.";
-				}
-            } else{
-                $statusMsg = "Sorry, there was an error uploading your file.";
-            }
-        } else{
-            $statusMsg = 'Sorry, only JPG, JPEG, PNG & GIF files are allowed to upload.';
-        }
-    } else{
-        $statusMsg = 'Please select a file to upload.';
-    }
-	header('location: profile.php');
-  }
-
 
 if (isset($_POST['post_comm'])) {
 		$id_img = $_POST['id'];
@@ -121,39 +90,6 @@ if (isset($_POST['post_comm'])) {
 		}
 	}
 
-if(isset($_POST["upload_profile"])) {
-	$targetDir = "./Photos/";
-	$fileName = basename($_FILES["file"]["name"]);
-	$targetFilePath = $targetDir . $fileName;
-	$fileType = pathinfo($targetFilePath,PATHINFO_EXTENSION);
-	// Allow certain file formats
-	$allowTypes = array('jpg','png','jpeg','gif','pdf');
-	if(!empty($_FILES["file"]["name"])) {
-		if(in_array($fileType, $allowTypes)){
-		// Upload file to server
-			 if(move_uploaded_file($_FILES["file"]["tmp_name"], $targetFilePath)) {
-			// Insert image file name into database
-
-				$update = $con->query("UPDATE images set profile = 0 where profile = '1' and id_user = '$id_user'");
-				$insert = $con->query("INSERT into images (id_user, path, upload_date, profile) VALUES ($id_user,'".$fileName."', NOW(), 1)");
-				if($insert){
-					$statusMsg = "The file ".$fileName. " has been uploaded successfully.";
-				} else{
-					$statusMsg = "File upload failed, please try again.";
-				}
-			} else{
-				$statusMsg = "Sorry, there was an error uploading your file.";
-			}
-		} else{
-			$statusMsg = 'Sorry, only JPG, JPEG, PNG, GIF, & PDF files are allowed to upload.';
-		}
-	} else{
-		$statusMsg = 'Please select a file to upload.';
-	}
-
-	header('location: profile.php');
-}
-
 	if (isset($_POST['to_profile'])) {
 		$_SESSION['profile_id_user'] = $_POST['profile_id_user'];
 		header('Location: profile.php');
@@ -169,6 +105,18 @@ if(isset($_POST["upload_profile"])) {
 	if (isset($_POST['search_user'])) {
 		$_SESSION['searched_user'] = $_POST['searched_user'];
 		header('Location: searched.php');
+		exit;
+	}
+	
+	if (isset($_POST['new_post'])) {
+		$_SESSION['upload_id_user'] = $id_user;
+		header('Location: upload.php');
+		exit;
+	}
+	
+	if (isset($_POST['settings'])) {
+		$_SESSION['settings_id_user'] = $id_user;
+		header('Location: upload.php');
 		exit;
 	}
 
@@ -217,11 +165,8 @@ if(isset($_POST["upload_profile"])) {
 					
 						<?php if($id_user == $_SESSION['id_user']) : ?>
 							<form action="profile.php" method="post" enctype="multipart/form-data">
-								<button name="upload_profile"class="btn btn-secondary" onclick="submit" >Change profile photo</button>
-								<button name="upload" class="btn btn-secondary" onclick="submit" >Upload new photo</button>
-								<input type="file" name="file">
-								
-								<?php  echo $statusMsg;?>
+								<button name="new_post"class="btn btn-secondary" onclick="submit" >Create new post</button>
+								<button name="settings" class="btn btn-secondary" onclick="submit" >Profile settings</button>								
 							</form>
 						<?php endif; ?>
 						
@@ -274,10 +219,13 @@ if(isset($_POST["upload_profile"])) {
                                 <div class="user-block">
 									<span class="description">Public - <?php echo $row['upload_date']; ?></span>
 								</div>
-
                             </div>
                             <div class="box-body">
-								<img class="img-responsive pad" src="<?php echo $row['path']; ?>" alt="Photo">
+								<blockquote class="blockquote text-right">
+									<footer class="blockquote-footer"><?php echo $row['description']; ?>
+									</footer>
+								</blockquote>
+								<img class="img-responsive pad" src="<?php echo $row['path']; ?>" alt="Photo" style="width: 100%">
                                 <form action="profile.php" method="post">
 								
                                 <input type="text" hidden = "true"  name="id" value="<?php echo $row['id_img'] ?>" >

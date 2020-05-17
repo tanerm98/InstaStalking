@@ -4,7 +4,7 @@
 	$con = mysqli_connect('localhost', 'root', 'root', 'instastalking');
 	
 	// Retrieve posts from the database
-	$posts = mysqli_query($con, "SELECT U.id_user, name, id_img, username, path, upload_date, likes
+	$posts = mysqli_query($con, "SELECT U.id_user, name, id_img, username, path, upload_date, likes, description
 								FROM images I join users U ON I.id_user = U.id_user
 								WHERE I.profile = 0
 								ORDER BY upload_date desc");
@@ -155,7 +155,11 @@
                             </div>
 							
                             <div class="box-body">
-								<img class="img-responsive pad" src="<?php echo $row['path']; ?>" alt="Photo">
+								<blockquote class="blockquote text-right">
+									<footer class="blockquote-footer"><?php echo $row['description']; ?>
+									</footer>
+								</blockquote>
+								<img class="img-responsive pad" src="<?php echo $row['path']; ?>" alt="Photo" style="width: 100%">
                                 <form action="feed.php" method="post">
 								
                                 <input type="text" hidden = "true"  name="id" value="<?php echo $row['id_img'] ?>" >

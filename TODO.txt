@@ -12,18 +12,21 @@ DONE		- like-uri
 
 DONE - sterge comentarii
 
-- buton de follow/unfollow la profil
+- profil:
+DONE- buton upload
+	- buton setari
+	- buton follow
 
 - pagina de upload photo
-	- profil
-	- feed
-	- descriere
-
-- buton de followers, following si top 5 la profil
-
-- search pe tag-uri
+DONE- profil
+DONE- feed
+DONE- descriere
 
 - setari:
 	- schimbare username
 	- schimbare email
 	- schimbare parola
+	
+- buton de followers, following si top 5 la profil
+
+- search pe tag-uri
