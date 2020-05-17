@@ -121,7 +121,7 @@
      border-radius: 3px;
      -webkit-box-shadow: none;
      box-shadow: none;
-     border: 1px solid transparent
+     border: 3px solid transparent
  }
 
  .btn-box-tool {
@@ -171,7 +171,7 @@
      border-radius: 3px;
      -webkit-box-shadow: none;
      box-shadow: none;
-     border: 1px solid transparent
+     border: 3px solid transparent
  }
 
  .btn-group-xs>.btn,
