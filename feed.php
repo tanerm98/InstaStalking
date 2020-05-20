@@ -3,11 +3,28 @@
 	// connect to the database
 	$con = mysqli_connect('localhost', 'root', 'root', 'instastalking');
 	
+	$id_user_crt = $_SESSION['id_user'];
 	// Retrieve posts from the database
 	$posts = mysqli_query($con, "SELECT U.id_user, name, id_img, username, path, upload_date, likes, description
 								FROM images I join users U ON I.id_user = U.id_user
 								WHERE I.profile = 0
+								AND U.id_user in (SELECT following FROM follows WHERE follower = '$id_user_crt')
+								OR I.profile = 0
+								AND U.id_user = '$id_user_crt'
 								ORDER BY upload_date desc");
+								
+	$no_result = 0;
+	if (!$row = mysqli_fetch_array($posts)) {
+		$no_result = 1;
+	} else {
+		$posts = mysqli_query($con, "SELECT U.id_user, name, id_img, username, path, upload_date, likes, description
+								FROM images I join users U ON I.id_user = U.id_user
+								WHERE I.profile = 0
+								AND U.id_user in (SELECT following FROM follows WHERE follower = '$id_user_crt')
+								OR I.profile = 0
+								AND U.id_user = '$id_user_crt'
+								ORDER BY upload_date desc");
+	}
 
 	if(isset($_POST["delete_comm"])) {
 		$id_comm = $_POST['id_comm'];
@@ -90,9 +107,9 @@
     <link rel="stylesheet" type="text/css" href="feed.css">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
 </head>
-<body>
+<body style="background-image: url(./Photos/z.jpg); background-attachment: fixed; background-position: center; background-repeat: no-repeat; background-size: cover;">
 
-	<nav class="navbar navbar-expand-md navbar-dark bg-dark">
+	<nav class="navbar navbar-expand-md navbar-dark bg-dark sticky-top">
 		<div class="navbar-collapse collapse w-100 order-1 order-md-0 dual-collapse2">
 			<form class="form-inline mr-auto" action="feed.php" method="post">
 				<input id="myInput" name="searched_user" class="form-control" type="text" placeholder="Search" aria-label="Search">
@@ -100,19 +117,23 @@
 			</form>
 		</div>
 		<div class="mx-auto order-0">
-			<a class="navbar-brand mx-auto" href="#">InstaStalking <i class="fa fa-camera" aria-hidden="true"></i></a>
+			<a class="navbar-brand mx-auto" href="feed.php">InstaStalking <i class="fa fa-dashcube" aria-hidden="true"></i></a>
 		</div>
 		<div class="navbar-collapse collapse w-100 order-3 dual-collapse2">
 			<ul class="navbar-nav ml-auto">
 				<li class="nav-item">
-					<a class="nav-link" src="<?php $_SESSION['profile_id_user'] = $_SESSION['id_user']; $_SESSION['profile_username'] = $_SESSION['username']; ?>" href="profile.php">PROFILE</a>
+					<a class="nav-link" src="<?php $_SESSION['profile_id_user'] = $_SESSION['id_user']; $_SESSION['profile_username'] = $_SESSION['username']; ?>" href="profile.php"><i class="fa fa-id-card" aria-hidden="true"></i> PROFILE</a>
 				</li>
 				<li class="nav-item">
-					<a class="nav-link" href="index.php?logout='1'">LOGOUT</a>
+					<a class="nav-link" href="index.php?logout='1'"><i class="fa fa-sign-out" aria-hidden="true"></i> LOGOUT</a>
 				</li>
 			</ul>
 		</div>
 	</nav>
+
+<?php if ($no_result == 1) { ?>
+	<img class="center" src="./Photos/no_results.jpeg" alt="Photo" style="display: block; margin-left: auto; margin-right: auto; width: 50%; opacity: 0.35; padding: 70px;">
+<?php exit;} ?>
 
 <?php while ($row = mysqli_fetch_array($posts)) { ?>
 
@@ -135,30 +156,31 @@
 
         <div class="page-content page-container" id="page-content">
             <div class="padding">
-                <div class="row container d-flex justify-content-center">
-                    <div class="col-md-6">
-                        <div class="box box-widget">
+                <div class="row container" style="margin-left: auto; margin-right: auto;">
+                    <div class="col-md-6" style="margin-left: auto; margin-right: auto;">
+                        <div class="box box-widget" >
                             <div class="box-header with-border">
                                 <div class="user-block">
-									<img class="img-circle" src="<?php echo $res['0']; ?>" alt="User Image">
+									<img class="img-circle" src="<?php echo $res['0']; ?>" alt="User Image" style="border: 3px solid #dd9;">
 									<span class="username">
 										<form action="feed.php" method="post">
 											<input type="text" hidden = "true"  name="profile_id_user" value="<?php echo $row['id_user'] ?>" >
 											<button class="btn btn-primary" name="to_profile" onclick="submit" style="font-size:15px; margin-left:10px">
 												<?php echo $row['name']; ?>
-											</button>
+											</button><i class="description", style="margin-left: 300px; margin-top: -25px;"><?php echo $row['upload_date']; ?></i>
 										</form>
 									</span>
-									<span class="description">Public - <?php echo $row['upload_date']; ?></span>
 								</div>
 
                             </div>
 							
                             <div class="box-body">
-								<blockquote class="blockquote text-right">
-									<footer class="blockquote-footer"><?php echo $row['description']; ?>
-									</footer>
-								</blockquote>
+								<?php if(!empty($row['description'])) : ?>
+									<blockquote class="blockquote text-right">
+										<footer class="blockquote-footer"><?php echo $row['description']; ?>
+										</footer>
+									</blockquote>
+								<?php endif; ?>
 								<img class="img-responsive pad" src="<?php echo $row['path']; ?>" alt="Photo" style="width: 100%">
                                 <form action="feed.php" method="post">
 								
@@ -207,7 +229,7 @@
 									?>
 
 									<div class="box-comment">
-										<img class="img-circle img-sm" src="<?php echo $res['0']; ?>" alt="User Image">
+										<img class="img-circle img-sm" src="<?php echo $res['0']; ?>" alt="User Image" style="border: 3px solid #dd9;">
 										<div class="comment-text">
 											<span class="username">
 												<form action="feed.php" method="post">
@@ -247,7 +269,7 @@
 
                             <div class="box-footer">
                                 <form action="feed.php" method="post">
-									<img class="img-responsive img-circle img-sm" src="<?php echo $res['0']; ?>" alt="Alt Text">
+									<img class="img-responsive img-circle img-sm" src="<?php echo $res['0']; ?>" alt="Alt Text" style="border: 3px solid #dd9;">
                                     <div class="img-push">
 										<input id="myInput" name="comment" type="text" class="form-control input-sm" placeholder="Press enter to post comment">
 									</div>

@@ -2,15 +2,21 @@
 <!DOCTYPE html>
 <html lang='en' class=''>
 <head>
-    <link rel="stylesheet" type="text/css" href="register.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="feed.css">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-  <script src="//netdna.bootstrapcdn.com/bootstrap/3.1.0/js/bootstrap.min.js"></script>
-    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.8/css/all.css">
 <script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
 </head>
-<body>
- <div class="container">
-<div class="card bg-light">
+<body style="background-image: url(./Photos/z1.jpg); background-attachment: fixed; background-position: center; background-repeat: no-repeat; background-size: cover;">
+
+	<nav class="navbar navbar-expand-md navbar-dark bg-dark sticky-top">
+		<div class="mx-auto order-0">
+			<a class="navbar-brand mx-auto" href="feed.php">InstaStalking <i class="fa fa-dashcube" aria-hidden="true"></i></a>
+		</div>
+	</nav>
+
+<div class="container" style="background: rgba(255,255,255, 0.5); border-radius: 25px; margin-top: 100px;">
 <article class="card-body mx-auto" style="max-width: 400px;">
 	<h4 class="card-title mt-3 text-center">Create Account</h4>
 
@@ -57,12 +63,11 @@
 
 
     <div class="form-group">
-        <button type="submit" name="reg_user" class="btn btn-primary btn-block"> Create Account  </button>
+        <button type="submit" name="reg_user" class="btn btn-primary btn-block"><i class="fa fa-user" aria-hidden="true"></i> Create Account  </button>
     </div> <!-- form-group// -->
-    <p class="text-center">Have an account? <a href="login.php">Log In</a> </p>
+    <p class="text-center">Have an account? <a href="login.php"><i class="fa fa-key" aria-hidden="true"></i> Log In</a> </p>
 </form>
 </article>
-</div> <!-- card.// -->
 </div>
 <!--container end.//-->
 

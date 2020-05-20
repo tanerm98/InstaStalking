@@ -2,6 +2,8 @@ DONE- profilul altuia
 DONE	- accesibil din:
 DONE		- feed
 DONE		- comentarii
+DONE		- like-uri
+DONE		- followers
 
 DONE - search bar: username
 DONE		=> lista cu useri
@@ -9,24 +11,52 @@ DONE		=> lista cu useri
 DONE - lista cu useri
 DONE	- accesibil din:
 DONE		- like-uri
+DONE		- follower / followint
+DONE		- search
 
 DONE - sterge comentarii
 
-- profil:
-DONE- buton upload
-	- buton setari
-	- buton follow
+DONE - profil:
+DONE	- buton upload
+DONE	- buton setari
+DONE	- buton follow
 
-- pagina de upload photo
-DONE- profil
-DONE- feed
-DONE- descriere
+DONE - pagina de upload photo
+	DONE- profil
+	DONE- feed
+	DONE- descriere
 
-- setari:
-	- schimbare username
-	- schimbare email
-	- schimbare parola
+DONE - setari:
+DONE	- schimbare nume, username, email, parola
 	
-- buton de followers, following si top 5 la profil
+DONE - buton de followers si following
 
-- search pe tag-uri
+DONE - search pe tag-uri
+
+DONE - infrumusetare
+DONE- logo
+DONE	- InstaStalikng
+DONE	- Create postari
+DONE	- settings
+DONE	- follow
+DONE	- profile
+DONE	- logout
+DONE	- sign in
+DONE	- register
+DONE	- search
+DONE	- upload photo
+DONE	- upload profile picture
+DONE	- description
+DONE- postari pe mijloc
+DONE- background image
+DONE	- postari
+DONE	- per total
+DONE- lista rezultate mai frumoasa
+
+DONE - fix upload poze
+DONE - no results found pe feed si tot ce mai trebuie
+	
+- hostare pe server
+
+- adaugare useri
+

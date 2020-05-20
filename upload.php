@@ -102,12 +102,12 @@ if(isset($_POST["upload_profile"])) {
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <meta charset="UTF-8">
-    <link rel="stylesheet" type="text/css" href="upload.css">
+    <link rel="stylesheet" type="text/css" href="feed.css">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
 </head>
-<body>
+<body style="background-image: url(./Photos/z.jpg); background-attachment: fixed; background-position: center; background-repeat: no-repeat; background-size: cover;">
 
-	<nav class="navbar navbar-expand-md navbar-dark bg-dark">
+	<nav class="navbar navbar-expand-md navbar-dark bg-dark sticky-top">
 		<div class="navbar-collapse collapse w-100 order-1 order-md-0 dual-collapse2">
 			<form class="form-inline mr-auto" action="profile.php" method="post">
 				<input id="myInput" name="searched_user" class="form-control" type="text" placeholder="Search" aria-label="Search">
@@ -115,15 +115,62 @@ if(isset($_POST["upload_profile"])) {
 			</form>
 		</div>
 			<div class="mx-auto order-0">
-				<a class="navbar-brand mx-auto" href="feed.php">InstaStalking <i class="fa fa-camera" aria-hidden="true"></i></a>
+				<a class="navbar-brand mx-auto" href="feed.php">InstaStalking <i class="fa fa-dashcube" aria-hidden="true"></i></a>
 			</div>
 		<div class="navbar-collapse collapse w-100 order-3 dual-collapse2">
 			<ul class="navbar-nav ml-auto">
 				<li class="nav-item">
-					<a class="nav-link" href="profile.php" src="<?php $_SESSION['profile_id_user'] = $_SESSION['id_user']; $_SESSION['profile_username'] = $_SESSION['username']; ?>">PROFILE</a>
+					<a class="nav-link" href="profile.php" src="<?php $_SESSION['profile_id_user'] = $_SESSION['id_user']; $_SESSION['profile_username'] = $_SESSION['username']; ?>"><i class="fa fa-id-card" aria-hidden="true"></i> PROFILE</a>
 				</li>
 				<li class="nav-item">
-					<a class="nav-link" href="index.php?logout='1'">LOGOUT</a>
+					<a class="nav-link" href="index.php?logout='1'"><i class="fa fa-sign-out" aria-hidden="true"></i> LOGOUT</a>
+				</li>
+			</ul>
+		</div>
+	</nav>
+	
+	<nav class="navbar navbar-expand-md navbar-light d-flex justify-content-between" style="background-color: #e3f2fd;">
+		<div class="d-flex">
+			<ul class="navbar-nav ml-auto">
+				<li class="nav-item" style="margin-right: 10px;">
+					<img class="img-circle img" src="<?php echo $profile_img['0']; ?>" alt=""  style="width: 50px; height: 50px; border: 3px solid #dd9;" >
+				</li>
+				<li class="nav-item">
+					<h4 class="h2-responsive" style="margin-top: 10px;">@<?php echo $username ?></h4>
+				</li>
+			</ul>
+		</div>
+		<div class="d-flex">
+			<?php if($id_user != $_SESSION['id_user']) : ?>
+				<form action="profile.php" method="post" enctype="multipart/form-data">
+					<input type="text" hidden = "true"  name="following_id" value="<?php echo $id_user ?>" >
+					<?php if($check_follow) : ?>
+							<button name="unfollow" class="btn btn-secondary" onclick="submit" >Unfollow</button>
+					<?php else : ?>
+							<button name="follow" class="btn btn-secondary" onclick="submit" >Follow</button>
+					<?php endif; ?>
+				</form>
+			<?php endif; ?>
+			<ul class="navbar-nav ml-auto">
+				<li class="nav-item">
+					<?php if($id_user == $_SESSION['id_user']) : ?>
+						<a class="nav-link" href="upload.php" src="<?php $_SESSION['upload_id_user'] = $_SESSION['profile_id_user']; ?>"><i class="fa fa-plus-square" aria-hidden="true"></i> Create new post</a>
+					<?php endif; ?>
+				</li>
+				<li class="nav-item">
+					<?php if($id_user == $_SESSION['id_user']) : ?>
+						<a class="nav-link" href="settings.php" src="<?php $_SESSION['settings_id_user'] = $_SESSION['profile_id_user']; ?>"><i class="fa fa-gears" aria-hidden="true"></i> Profile settings</a>
+					<?php endif; ?>
+				</li>
+			</ul>
+		</div>
+		<div class="d-flex">
+			<ul class="navbar-nav ml-auto">
+				<li class="nav-item">
+					<a class="nav-link" href="followers.php" src="<?php $_SESSION['followers_id_user'] = $_SESSION['profile_id_user']; ?>">FOLLOWERS</a>
+				</li>
+				<li class="nav-item">
+					<a class="nav-link" href="following.php" src="<?php $_SESSION['following_id_user'] = $_SESSION['profile_id_user']; ?>">FOLLOWING</a>
 				</li>
 			</ul>
 		</div>
@@ -134,7 +181,7 @@ if(isset($_POST["upload_profile"])) {
 		<form action="upload.php" method="post" enctype="multipart/form-data">
 			<div class="upload_photo_single" style="padding: 50px;">
 				<div class="input-group-prepend" style="height: 100px;">
-					<button name="upload_profile"class="btn btn-primary btn-lg btn-block" onclick="submit">Set new profile picture</button>
+					<button name="upload_profile"class="btn btn-primary btn-lg btn-block" onclick="submit"><i class="fa fa-cloud-upload" aria-hidden="true"></i> Set new profile picture</button>
 				</div>
 				<div class="custom-file">
 					<input type="file" name="file" class="custom-file-input" id="inputGroupFile01" aria-describedby="inputGroupFileAddon01">
@@ -146,7 +193,7 @@ if(isset($_POST["upload_profile"])) {
 		<form action="upload.php" method="post" enctype="multipart/form-data">
 			<div class="upload_photo_single" style="padding: 50px;">
 				<div class="input-group-prepend" style="height: 100px;">
-					<button name="upload" class="btn btn-primary btn-lg btn-block" onclick="submit" >Add to news feed</button>
+					<button name="upload" class="btn btn-primary btn-lg btn-block" onclick="submit" ><i class="fa fa-cloud-upload" aria-hidden="true"></i> Add to news feed</button>
 				</div>
 				<div class="custom-file">
 					<input type="file" name="file" class="custom-file-input" id="inputGroupFile01" aria-describedby="inputGroupFileAddon01">
