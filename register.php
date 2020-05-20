@@ -12,7 +12,7 @@
 
 	<nav class="navbar navbar-expand-md navbar-dark bg-dark sticky-top">
 		<div class="mx-auto order-0">
-			<a class="navbar-brand mx-auto" href="feed.php">InstaStalking <i class="fa fa-dashcube" aria-hidden="true"></i></a>
+			<a class="navbar-brand mx-auto" href="#">InstaStalking <i class="fa fa-dashcube" aria-hidden="true"></i></a>
 		</div>
 	</nav>
 
